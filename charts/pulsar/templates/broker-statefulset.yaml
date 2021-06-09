@@ -82,7 +82,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
         {{ else }}
           {{ .Values.broker.affinity.type }}:
-            - weight: 100
+            - weight: {{ .Values.affinity.weight }}
               podAffinityTerm:
                 labelSelector:
                   matchExpressions:
@@ -99,6 +99,25 @@ spec:
                       values:
                       - {{ .Values.broker.component }}
                 topologyKey: "kubernetes.io/hostname"
+            {{- if and .Values.affinity.multiAz.enabled}}
+            - weight: {{ .Values.affinity.multiAz.weight }}
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: "app"
+                      operator: In
+                      values:
+                      - "{{ template "pulsar.name" . }}"
+                    - key: "release"
+                      operator: In
+                      values:
+                      - {{ .Release.Name }}
+                    - key: "component"
+                      operator: In
+                      values:
+                      - {{ .Values.broker.component }}
+                topologyKey: "topology.kubernetes.io/zone"
+            {{ end }}
         {{ end }}
         {{- end }}
       terminationGracePeriodSeconds: {{ .Values.broker.gracePeriod }}

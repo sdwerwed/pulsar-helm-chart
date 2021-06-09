@@ -90,7 +90,11 @@ affinity:
   # Set the anti affinity type. Valid values:
   # requiredDuringSchedulingIgnoredDuringExecution - rules must be met for pod to be scheduled (hard) requires at least one node per replica
   # preferredDuringSchedulingIgnoredDuringExecution - scheduler will try to enforce but not guranentee
-  type: requiredDuringSchedulingIgnoredDuringExecution
+  type: preferredDuringSchedulingIgnoredDuringExecution
+  weight: 30 # Applies only when type: preferredDuringSchedulingIgnoredDuringExecution
+  multiAz: 
+    enabled: true
+    weight: 70 # Applies only when type: preferredDuringSchedulingIgnoredDuringExecution
 
 ## Components
 ##
